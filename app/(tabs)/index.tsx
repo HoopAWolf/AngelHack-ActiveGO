@@ -4,7 +4,8 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import '@tamagui/core/reset.css';
-import { TamaguiProvider, View, createTamagui, Text, styled } from '@tamagui/core';
+import { TamaguiProvider, View, createTamagui } from '@tamagui/core';
+import { Button } from 'tamagui';
 import { config } from '@tamagui/config/v3'
 
 const tamaguiConfig = createTamagui(config)
@@ -28,6 +29,7 @@ export default function HomeScreen() {
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="title">ActiveGO!</ThemedText>
           <HelloWave />
+          <Button theme="blue">Click Here to RUN</Button>
         </ThemedView>
         <ThemedView style={styles.stepContainer}>
           <ThemedText type="subtitle">Step 1: Try it</ThemedText>
