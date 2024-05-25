@@ -7,11 +7,68 @@ import RewardsPointsComponent from '@/components/RewardsPointsComponent';
 import ChallengesClearedComponent, { modifyChallengesClearedCountPoints } from '@/components/ChallengesClearedComponent';
 import PointsEarnedComponent from '@/components/PointsEarnedComponent';
 import HealthPointComponent, { modifyHealthPoints } from '@/components/HealthPointsComponent';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+class LocationDetail{
+  constructor(id:number, name:string, eventDes:string, date:Date, duration:Float, capacity:number, count:number, members:number[], longitude:Float, latitude:Float, eventType:number) {
+    this.id = id
+    this.name = name;
+    this.eventDes = eventDes
+    this.date = date;
+    this.duration = duration
+    this.capacity = capacity;
+    this.count = count
+    this.members = members
+    this.longitude = longitude
+    this.latitude = latitude
+    this.eventType = eventType
+  }
+  // Method to create a Person object from JSON
+  static fromJSON(json) {
+    return new LocationDetail(json.id, json.name, json.eventDes, json.date, json.duration, json.capacity, json.count, json.members, json.longitude, json.latitude, json.evenType);
+  }
+}
 
 const { height } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [allData, setAllData] = useState<LocationDetail[]>(
+    [
+      { id: 1, name: 'BLK 64a Commonwealth', latitude: 1.2991835976134736, longitude: 103.79657305825769,
+       capacity: 10, eventType: 0},
+      { id: 2, name: 'BLK 65 Commonwealth', latitude: 1.2996205624351878, longitude: 103.79687908989848,
+      capacity: 10, eventType: 0 },
+      { id: 3, name: 'BLK 63 Commonwealth', latitude: 1.2988528664723906, longitude: 103.79713333649674,
+      capacity: 10, eventType: 0 },
+      { id: 4, name: 'BLK 62 Commonwealth', latitude: 1.2985073314629263, longitude: 103.79710212352771,
+      capacity: 10, count: 5, members:[1,2,3,4,5], eventType: 1, eventDes: 'Chess' }
+    ]
+  )
+  
+  const storeData = async (obj:LocationDetail[]) => {
+    try {
+      await AsyncStorage.setItem('allData', JSON.stringify(obj));
+    } catch (e) {
+      console.log("Error: ",e);
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('allData');
+      if (value !== null) {
+        console.log("value: ", value);
+        const parsedObj = JSON.parse(value);
+        setAllData([])
+        setAllData(parsedObj)
+        console.log('array' + allData)
+      }
+    } catch (e) {
+      console.log("Error: ",e);
+    }
+  };
+
   const slideAnim = useRef(new Animated.Value(height)).current; // Initial position off-screen (bottom)
 
   const openModal = () => {
@@ -41,6 +98,12 @@ export default function HomeScreen() {
     { name: 'Adrian', icon: require('../../assets/images/social_icon.png') },
     // Add more friend data as needed
   ];
+
+   // useEffect hook to call the function on component mount
+   useEffect(() => {
+    storeData(allData);
+    getData()
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
 
   return (
     <ThemedView style={styles.overallContainer}>

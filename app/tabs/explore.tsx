@@ -2,28 +2,52 @@ import React, { useState, useEffect } from 'react';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import { StyleSheet, View, Text } from 'react-native';
 import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+class LocationDetail{
+  constructor(id:number, name:string, eventDes:string, date:Date, duration:Float, capacity:number, count:number, members:number[], longitude:Float, latitude:Float, eventType:number) {
+    this.id = id
+    this.name = name;
+    this.eventDes = eventDes
+    this.date = date;
+    this.duration = duration
+    this.capacity = capacity;
+    this.count = count
+    this.members = members
+    this.longitude = longitude
+    this.latitude = latitude
+    this.eventType = eventType
+  }
+  // Method to create a Person object from JSON
+  static fromJSON(json) {
+    return new LocationDetail(json.id, json.name, json.eventDes, json.date, json.duration, json.capacity, json.count, json.members, json.longitude, json.latitude, json.evenType);
+  }
+}
 
 export default function App() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [mapRef, setMapRef] = useState<MapView | null>(null);
-  const searching = false
-
-  const [markers, setMarkers] = useState([
-    { id: 1, title: 'BLK 64a Commonwealth', coordinate: { latitude: 1.2991835976134736, longitude: 103.79657305825769 },
-     count: 10, free: true, type: 0, name: 'BLK 64a Commonwealth' },
-    { id: 2, title: 'BLK 65 Commonwealth', coordinate: { latitude: 1.2996205624351878, longitude: 103.79687908989848 },
-     count: 10, free: true, type: 0, name: 'BLK 65 Commonwealth' },
-    { id: 3, title: 'BLK 63 Commonwealth', coordinate: { latitude: 1.2988528664723906, longitude: 103.79713333649674 },
-     count: 10, free: true, type: 0, name: 'BLK 63 Commonwealth' },
-    { id: 4, title: 'Chess', coordinate: { latitude: 1.2985073314629263, longitude: 103.79710212352771 },
-     count: 10, free: false, type: 1, name: 'BLK 62 Commonwealth' }
-  ]);
 
   const [types, setTypes] = useState([
     { color: 'green'},
     { color: 'blue'},
     { color: 'orange'}
   ])
+  const [allData, setAllData] = useState<LocationDetail[]>()
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('allData');
+      if (value !== null) {
+        console.log("value: ", value);
+        const parsedObj = JSON.parse(value);
+        await setAllData(parsedObj)
+        console.log('array: ' + allData)
+      }
+    } catch (e) {
+      console.log("Error: ",e);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -51,6 +75,7 @@ export default function App() {
       } catch (error) {
         console.error('Error getting current location:', error.message);
       }
+      getData()
     })();
   }, [mapRef]); // Added mapRef as a dependency
 
@@ -62,21 +87,19 @@ export default function App() {
           showsUserLocation={true} 
           ref={ref => setMapRef(ref)} // Set the mapRef when the MapView is rendered
         >
-          {markers.map(marker => (
-            marker.free == searching && (
+          {allData && allData.map(marker => (
             <Marker
               key={marker.id}
-              coordinate={marker.coordinate}
-              title={marker.title}
-              description={"Capacity: " + marker.count }  
-              pinColor={types[marker.type].color}>
+              coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+              title={marker.name}
+              description={"Capacity: " + marker.capacity }  
+              pinColor={types[marker.eventType].color}>
             
               <View style={styles.marker}>
-                <Text style={styles.markerText}>{marker.title}</Text>
-                <View style={[styles.pin, { backgroundColor: types[marker.type].color }]} />
+                <Text style={styles.markerText}>{marker.name}</Text>
+                <View style={[styles.pin, { backgroundColor: types[marker.eventType].color }]} />
               </View>
             </Marker>
-          )
           ))} 
         </MapView>
       ) : (
