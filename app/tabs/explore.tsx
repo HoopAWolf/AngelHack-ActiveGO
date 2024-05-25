@@ -35,6 +35,7 @@ let markerType = -1
 let markerDes = ''
 let markerId = -1
 let markerDuration = -1
+let markerDate = ''
 
 export default function App() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
@@ -168,6 +169,8 @@ export default function App() {
                   markerSet = true;
                   markerDes = marker.eventDes
                   markerDuration = marker.duration
+                  if(marker.date)
+                    markerDate = marker.date.toLocaleString()
                   openModal();
                 }}>
               
@@ -193,6 +196,7 @@ export default function App() {
                     {markerType === 0 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Capacity: ' + markerCapacity}</Text>)}
                     {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Count/Capacity: ' + markerCount + '/' + markerCapacity}</Text>)}
                     {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Duration: ' + markerDuration}</Text>)}
+                    {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 5}}>{'Date: ' + markerDate}</Text>)}
                     {markerType === 1 && (
                       <View style={{alignItems: 'center', justifyContent: 'center'}}>
                       <TouchableOpacity style={{width: '50%', backgroundColor: 'rgba(255, 128, 128, 1)', padding: 10, alignItems: 'center', justifyContent: 'center', borderRadius: 25}} onPress={() => {

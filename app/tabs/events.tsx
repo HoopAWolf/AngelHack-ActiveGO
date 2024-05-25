@@ -18,6 +18,7 @@ let markerType = -1
 let markerDes = ''
 let markerId = -1
 let markerDuration = -1
+let markerDate = ''
 
 class LocationDetail{
   constructor(id:number, name:string, eventDes:string, date:Date, duration:Float, capacity:number, count:number, members:number[], longitude:Float, latitude:Float, eventType:number) {
@@ -328,6 +329,8 @@ export default function EventScreen() {
                   markerSet = true;
                   markerDes = marker.eventDes
                   markerDuration = marker.duration
+                  if(marker.date)
+                    markerDate = marker.date.toLocaleString()
                   openModal();
                 }}>
               
@@ -349,10 +352,11 @@ export default function EventScreen() {
                     style={{alignContent: 'space-evenly', paddingVertical: 20, paddingHorizontal: 10, marginHorizontal: 15, marginVertical: 15}}
                     imageStyle={{ borderRadius: 25 }}>
                     <Text style={{fontSize: 24, marginVertical: 10}}>{'Name: ' + markerTitle}</Text>
-                    {markerType === 1 && <Text style={{fontSize: 24, marginVertical: 10}}>{'Description: ' + markerDes}</Text>}
+                    {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 5}}>{'Description: ' + markerDes}</Text>)}
                     {markerType === 0 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Capacity: ' + markerCapacity}</Text>)}
-                    {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Count/Capacity: ' + markerCount + '/' + markerCapacity}</Text>)}
-                    {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Duration: ' + markerDuration}</Text>)}
+                    {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 5}}>{'Count/Capacity: ' + markerCount + '/' + markerCapacity}</Text>)}
+                    {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 5}}>{'Duration: ' + markerDuration}</Text>)}
+                    {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 5}}>{'Date: ' + markerDate}</Text>)}
                     {markerType === 0 && (
                       <View style={{alignItems: 'center', justifyContent: 'center'}}>
                       <TouchableOpacity style={{width: '50%', backgroundColor: 'rgba(255, 128, 128, 1)', padding: 10, alignItems: 'center', justifyContent: 'center', borderRadius: 25}} onPress={() => {
@@ -373,6 +377,7 @@ export default function EventScreen() {
                               storeData(allData)
                             getData()
                             alert('Event created successfully')
+                            setIndex(0)
                           }
                           else
                             alert('Activity is full')
