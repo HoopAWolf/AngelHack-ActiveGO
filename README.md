@@ -7,13 +7,14 @@ This is a mobile application done in React Native by Team 4Gs which aims to crea
 1. Install dependencies
 
    ```bash
+   choco install -y nodejs-lts microsoft-openjdk17
    npm install
    ```
 
 2. Start the app
 
    ```bash
-    npx expo start
+   npx expo start
    ```
 
 ## Figma Link
