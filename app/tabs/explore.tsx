@@ -30,6 +30,11 @@ const { height } = Dimensions.get('window');
 let markerTitle = 'unknown marker';
 let markerCapacity = 0;
 let markerSet = false;
+let markerCount = 0;
+let markerType = -1
+let markerDes = ''
+let markerId = -1
+let markerDuration = -1
 
 export default function App() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
@@ -40,7 +45,7 @@ export default function App() {
     { color: 'blue'},
     { color: 'orange'}
   ])
-  const [allData, setAllData] = useState<LocationDetail[]>()
+  let [allData, setAllData] = useState<LocationDetail[]>()
 
   const getData = async () => {
     try {
@@ -107,6 +112,24 @@ export default function App() {
       setModalVisible(false); // Close modal after animation
     });
   };
+  
+  const storeData = async (obj:LocationDetail[]) => {
+    try {
+      await AsyncStorage.setItem('allData', JSON.stringify(obj));
+    } catch (e) {
+      console.log("Error: ",e);
+    }
+  };
+
+  const updateItemCount = (id, new_count) => {
+    let updatedData = allData
+    let item = updatedData.find(item => item.id === id);
+    if (item) {
+      item.count = new_count;
+    }
+
+    setAllData(updatedData);
+  };
 
   return (
     <View style={styles.container}>
@@ -137,9 +160,14 @@ export default function App() {
                 description={"Capacity: " + marker.capacity }  
                 pinColor={types[marker.eventType].color}
                 onPress={() => {
+                  markerId = marker.id
                   markerTitle = marker.name;
                   markerCapacity = marker.capacity;
+                  markerCount = marker.count
+                  markerType = marker.eventType
                   markerSet = true;
+                  markerDes = marker.eventDes
+                  markerDuration = marker.duration
                   openModal();
                 }}>
               
@@ -160,15 +188,31 @@ export default function App() {
                     source={require('../../assets/images/BG Card.png')}
                     style={{alignContent: 'space-evenly', paddingVertical: 20, paddingHorizontal: 10, marginHorizontal: 15, marginVertical: 15}}
                     imageStyle={{ borderRadius: 25 }}>
-                    <Text style={{fontSize: 24, marginVertical: 10}}>{'Marker:\n  ' + markerTitle}</Text>
-                    <Text style={{fontSize: 24, marginVertical: 10}}>{'Capacity:\n  ' + markerCapacity}</Text>
-                    <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{fontSize: 24, marginVertical: 10}}>{'Name: ' + markerTitle}</Text>
+                    {markerType === 1 && <Text style={{fontSize: 24, marginVertical: 10}}>{'Description: ' + markerDes}</Text>}
+                    {markerType === 0 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Capacity: ' + markerCapacity}</Text>)}
+                    {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Count/Capacity: ' + markerCount + '/' + markerCapacity}</Text>)}
+                    {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Duration: ' + markerDuration}</Text>)}
+                    {markerType === 1 && (
+                      <View style={{alignItems: 'center', justifyContent: 'center'}}>
                       <TouchableOpacity style={{width: '50%', backgroundColor: 'rgba(255, 128, 128, 1)', padding: 10, alignItems: 'center', justifyContent: 'center', borderRadius: 25}} onPress={() => {
-                        // TODO: Add button logic
+                        if(markerType === 1)
+                        {
+                          if(markerCount < markerCapacity)
+                          {
+                            updateItemCount(markerId, markerCount += 1)
+                            if(allData)
+                              storeData(allData)
+                            getData()
+                          }
+                          else
+                            alert('Activity is full')
+                        }
                       }}>
-                        <Text style={{fontSize: 20}}>Host Event</Text>
+                        <Text style={{fontSize: 20}}>Join Event</Text>
                       </TouchableOpacity>
-                    </View>
+                      </View>)}
+                    
                   </ImageBackground>
                 </ThemedView>
               </Animated.View>

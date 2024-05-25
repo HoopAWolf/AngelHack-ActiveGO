@@ -1,11 +1,23 @@
-import { Image, StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { Image, StyleSheet, View, Text, TouchableOpacity, TextInput, Dimensions, Animated, ImageBackground } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Button } from 'react-native-paper';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Float } from 'react-native/Libraries/Types/CodegenTypes';
 import * as Location from 'expo-location';
 import MapView, { Marker, Callout } from 'react-native-maps';
+import { ThemedView } from '@/components/ThemedView';
+
+const { height } = Dimensions.get('window');
+
+let markerTitle = 'unknown marker';
+let markerCapacity = 0;
+let markerSet = false;
+let markerCount = 0;
+let markerType = -1
+let markerDes = ''
+let markerId = -1
+let markerDuration = -1
 
 class LocationDetail{
   constructor(id:number, name:string, eventDes:string, date:Date, duration:Float, capacity:number, count:number, members:number[], longitude:Float, latitude:Float, eventType:number) {
@@ -45,6 +57,28 @@ export default function EventScreen() {
     { color: 'blue'},
     { color: 'orange'}
   ])
+  const [modalVisible, setModalVisible] = useState(false);
+  const slideAnim = useRef(new Animated.Value(height)).current; // Initial position off-screen (bottom)
+
+  const openModal = () => {
+    setModalVisible(true);
+    Animated.timing(slideAnim, {
+      toValue: 0, // Move to the top of the screen
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeModal = () => {
+    Animated.timing(slideAnim, {
+      toValue: height, // Move back to the bottom of the screen
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      setModalVisible(false); // Close modal after animation
+    });
+  };
+
   const storeData = async (obj:LocationDetail[]) => {
     try {
       await AsyncStorage.setItem('allData', JSON.stringify(obj));
@@ -122,6 +156,16 @@ export default function EventScreen() {
 
   const handleDurationInputChange = (text) => {
     setDuration(Number.parseInt(text));
+  };
+
+  const updateObj = (id, obj:LocationDetail) => {
+    let updatedData = allData
+    let item = updatedData.find(item => item.id === id);
+    if (item) {
+      item = obj;
+    }
+
+    setAllData(updatedData);
   };
 
   useEffect(() => {
@@ -249,19 +293,43 @@ export default function EventScreen() {
     )) || (index === 3 && (
       <View style={styles.map_container}>
         {location ? (
+        <View style={{flex: 1}}>
           <MapView 
             style={styles.map} 
             showsUserLocation={true} 
             ref={ref => setMapRef(ref)} // Set the mapRef when the MapView is rendered
+            onPress={() => {
+              markerTitle = "unknown";
+              markerCapacity = -1;
+              markerSet = false;
+              closeModal();
+            }}
+            onPanDrag={() => {
+              markerTitle = "unknown";
+              markerCapacity = -1;
+              markerSet = false;
+              closeModal();
+            }}
           >
             {allData && allData.map(marker => (
-              marker.capacity >= capacity && (
+              marker.capacity >= capacity && marker.eventType === 0 && (
               <Marker
                 key={marker.id}
                 coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
                 title={marker.name}
                 description={"Capacity: " + marker.capacity }  
-                pinColor={types[marker.eventType].color}>
+                pinColor={types[marker.eventType].color}
+                onPress={() => {
+                  markerId = marker.id
+                  markerTitle = marker.name;
+                  markerCapacity = marker.capacity;
+                  markerCount = marker.count
+                  markerType = marker.eventType
+                  markerSet = true;
+                  markerDes = marker.eventDes
+                  markerDuration = marker.duration
+                  openModal();
+                }}>
               
                 <View style={styles.marker}>
                   <Text style={styles.markerText}>{marker.name}</Text>
@@ -271,8 +339,59 @@ export default function EventScreen() {
               )
             ))} 
           </MapView>
+          <View style={{backgroundColor: 'rgba(0, 0, 0, 0)', width: '100%'}}>
+            { 
+              modalVisible && (
+              <Animated.View style={[styles.modalView, { transform: [{ translateY: slideAnim }]}]}>
+                <ThemedView style={{height: '90%', width: '100%', alignContent: 'center', justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0)'}}>
+                  <ImageBackground
+                    source={require('../../assets/images/BG Card.png')}
+                    style={{alignContent: 'space-evenly', paddingVertical: 20, paddingHorizontal: 10, marginHorizontal: 15, marginVertical: 15}}
+                    imageStyle={{ borderRadius: 25 }}>
+                    <Text style={{fontSize: 24, marginVertical: 10}}>{'Name: ' + markerTitle}</Text>
+                    {markerType === 1 && <Text style={{fontSize: 24, marginVertical: 10}}>{'Description: ' + markerDes}</Text>}
+                    {markerType === 0 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Capacity: ' + markerCapacity}</Text>)}
+                    {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Count/Capacity: ' + markerCount + '/' + markerCapacity}</Text>)}
+                    {markerType === 1 && (<Text style={{fontSize: 24, marginVertical: 10}}>{'Duration: ' + markerDuration}</Text>)}
+                    {markerType === 0 && (
+                      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                      <TouchableOpacity style={{width: '50%', backgroundColor: 'rgba(255, 128, 128, 1)', padding: 10, alignItems: 'center', justifyContent: 'center', borderRadius: 25}} onPress={() => {
+                        if(markerType === 0)
+                        {
+                          if(capacity < markerCapacity)
+                          {
+                            let item = allData.find(item => item.id === markerId);
+                            item.eventType = 1
+                            item.eventDes = name
+                            item.capacity = capacity
+                            item.duration = duration
+                            item.date = date
+                            item.count = 0
+                            setModalVisible(false)
+                            updateObj(markerId, item)
+                            if(allData)
+                              storeData(allData)
+                            getData()
+                            alert('Event created successfully')
+                          }
+                          else
+                            alert('Activity is full')
+                        }
+                      }}>
+                        <Text style={{fontSize: 20}}>Host Event</Text>
+                      </TouchableOpacity>
+                      </View>)}
+                    
+                  </ImageBackground>
+                </ThemedView>
+              </Animated.View>
+            )}
+          </View>
+        </View>
         ) : (
-          <Text>Loading...</Text>
+          <View style={{flex:1, justifyContent: 'center', alignSelf: 'center'}}>
+            <Text style={{fontWeight: 'bold', fontSize: 40}}>Loading...</Text>
+          </View>
         )}
       </View>
     ))
@@ -359,5 +478,21 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'black',
+  },
+
+  modalContainer: {
+    flex: 1, 
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    padding: 10,
+  },
+  modalView: {
+    position: 'relative',
+    bottom: 0,
+    width: '100%',
+    height: height/2.75,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
   },
 });

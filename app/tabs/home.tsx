@@ -42,7 +42,7 @@ export default function HomeScreen() {
       { id: 3, name: 'BLK 63 Commonwealth', latitude: 1.2988528664723906, longitude: 103.79713333649674,
       capacity: 10, eventType: 0 },
       { id: 4, name: 'BLK 62 Commonwealth', latitude: 1.2985073314629263, longitude: 103.79710212352771,
-      capacity: 10, count: 5, members:[1,2,3,4,5], eventType: 1, eventDes: 'Chess' }
+      capacity: 10, count: 5, members:[1,2,3,4,5], eventType: 1, eventDes: 'Chess', duration:3 }
     ]
   )
   
