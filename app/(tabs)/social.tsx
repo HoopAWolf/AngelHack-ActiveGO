@@ -17,7 +17,7 @@ declare module '@tamagui/core' {
   interface TamaguiCustomConfig extends Conf { }
 }
 
-export default function LoginScreen() {
+export default function SocialScreen() {
     return (
         <TamaguiProvider config={tamaguiConfig}>
             <ParallaxScrollView
@@ -29,8 +29,7 @@ export default function LoginScreen() {
                 />
             }>
             <ThemedView style={styles.titleContainer}>
-                <ThemedText type="title">LOGIN PAGE!</ThemedText>
-                <Button theme="red">Click Here to LOG YO ASS IN</Button>
+                <ThemedText type="title">SOCIAL PAGE</ThemedText>
             </ThemedView>
 
             </ParallaxScrollView>
