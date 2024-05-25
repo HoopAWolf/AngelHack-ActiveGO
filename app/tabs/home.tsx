@@ -2,10 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, Animated, Dimensions, Image, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import DateTimeComponent from '@/components/DateTime';
+import RewardsPointsComponent from '@/components/RewardsPointsComponent';
+import ChallengesClearedComponent, { modifyChallengesClearedCountPoints } from '@/components/ChallengesClearedComponent';
+import PointsEarnedComponent from '@/components/PointsEarnedComponent';
+import HealthPointComponent, { modifyHealthPoints } from '@/components/HealthPointsComponent';
 
 const { height } = Dimensions.get('window');
-
-
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -48,7 +51,7 @@ export default function HomeScreen() {
         />
         <ThemedView style={styles.profileNameSection}>
           <ThemedText style={styles.profileNameText}>Lin Bae Xin</ThemedText>
-          <ThemedText style={styles.profileDateText}>01/02/1999</ThemedText>
+          <DateTimeComponent />
         </ThemedView>
       </ThemedView>
 
@@ -59,9 +62,9 @@ export default function HomeScreen() {
               source={require('../../assets/images/ICON Heart.png')}
               style={styles.scoreIcon}
             />
-            <ThemedText style={styles.scoreText}>0123</ThemedText>
+            <HealthPointComponent />
           </ThemedView>
-          <ThemedText style={styles.scoreText}>Healthpoints</ThemedText>
+          <ThemedText style={{fontSize: 20, color: '#000000'}}>Healthpoints</ThemedText>
         </ThemedView>
         <ThemedView style={styles.scoreLumpLump}>
           <ThemedView style={styles.scoreLump}>
@@ -69,9 +72,9 @@ export default function HomeScreen() {
               source={require('../../assets/images/ICON Gift.png')}
               style={styles.scoreIcon}
             />
-            <ThemedText style={styles.scoreText}>0123</ThemedText>
+            <RewardsPointsComponent />
           </ThemedView>
-          <ThemedText style={styles.scoreText}>Rewards</ThemedText>
+          <ThemedText style={{fontSize: 20, color: '#000000'}}>Rewards</ThemedText>
         </ThemedView>
       </ThemedView>
 
@@ -82,7 +85,7 @@ export default function HomeScreen() {
             style={styles.buttonImage}>
           </Image>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonButton}>
+        <TouchableOpacity style={styles.buttonButton} onPress={() => {modifyChallengesClearedCountPoints(1)}}>
           <Image
             source={require('../../assets/images/BUTTON Challenges.png')}
             style={styles.buttonImage}>
@@ -93,7 +96,7 @@ export default function HomeScreen() {
       <ThemedView style={styles.cardSection}>
         <ImageBackground
           source={require('../../assets/images/BG Card.png')}
-          style={{ flex: 1, padding: 15 }}
+          style={{ padding: 15 }}
           imageStyle={{ borderRadius: 25 }}>
           <ThemedView style={{ flexDirection: 'row', backgroundColor: 'rgba(0, 0, 0, 0)', paddingTop: 10 }}>
             <Image
@@ -102,22 +105,23 @@ export default function HomeScreen() {
             />
             <ThemedText style={{ fontSize: 20, color: '#5f5f5f' }}>Lifetime Achievements</ThemedText>
           </ThemedView>
-          <ThemedView style={{ flexDirection: 'row', backgroundColor: 'rgba(0, 0, 0, 0)', paddingTop: 20 }}>
-            <ThemedView style={styles.cardVerticalLump}>
-              <ThemedText style={{ fontSize: 18, color: '#5f5f5f', paddingTop: 15 }}>Challenges Cleared</ThemedText>
-              <ThemedText style={{ fontSize: 32, color: '#000000', paddingTop: 15 }}>0123</ThemedText>
-              <ThemedText style={{ fontSize: 18, color: '#5f5f5f', paddingTop: 15 }}>Points Earned</ThemedText>
+          <ThemedView style={{flexDirection: 'row', backgroundColor: 'rgba(0, 0, 0, 0)', paddingTop: 20}}>
+              <ThemedView style={styles.cardVerticalLump}>
+                <ThemedText style={{fontSize: 18, color: '#5f5f5f', paddingTop: 15}}>Challenges Cleared</ThemedText>
+                <ChallengesClearedComponent />
+                <ThemedText style={{fontSize: 18, color: '#5f5f5f', paddingTop: 20}}>Points Earned</ThemedText>
+              </ThemedView>
+              <ThemedView style={styles.cardVerticalLump}>
+                <Image
+                  source={require('../../assets/images/ICON Trophy.png')}
+                  style={{width: 150, height: 100}}
+                />
+                <PointsEarnedComponent />
+              </ThemedView>
             </ThemedView>
-            <ThemedView style={styles.cardVerticalLump}>
-              <Image
-                source={require('../../assets/images/ICON Trophy.png')}
-                style={{ width: 150, height: 100 }}
-              />
-              <ThemedText style={{ fontSize: 24, color: '#000000', paddingRight: 5, alignSelf: 'flex-end' }}>0123</ThemedText>
-            </ThemedView>
-          </ThemedView>
         </ImageBackground>
       </ThemedView>
+
       <View style={styles.container}>
         {modalVisible && (
           <Animated.View style={[styles.modalView, { transform: [{ translateY: slideAnim }] }]}>
@@ -289,10 +293,6 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     marginRight: 10,
-  },
-  scoreText: {
-    fontSize: 20,
-    color: '#000000',
   },
 
   // BIG BUTTONS
