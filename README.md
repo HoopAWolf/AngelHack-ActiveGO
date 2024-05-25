@@ -15,3 +15,6 @@ This is a mobile application done in React Native by Team 4Gs which aims to crea
    ```bash
     npx expo start
    ```
+
+## Figma Link
+https://www.figma.com/design/NGR1Pl7427BwrYaVwhiQ2y/ActiveGo?node-id=0-1&t=gv5XO3BYyn7zProj-1
