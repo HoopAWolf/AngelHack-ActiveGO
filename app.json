@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "active-go",
-    "slug": "active-go",
+    "slug": "activego",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.fourg.activego"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +32,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c55f5759-63b6-421d-9bb7-f542c878e388"
+      }
+    },
+    "owner": "onghuisheng"
   }
 }
