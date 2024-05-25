@@ -53,7 +53,7 @@ export default function SocialScreen() {
           </TouchableOpacity>
           <TextInput
             style={styles.textField}
-            placeholder="Search Friends Or Neighbours"
+            placeholder="Search Friends"
             placeholderTextColor="#999"
           />
           <ThemedText type="title" style={styles.friendTitle}>Friends</ThemedText>
@@ -111,8 +111,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   backButton: {
-    height: undefined,
-    width: undefined,
   },
   textField: {
     marginTop: 20,
@@ -137,15 +135,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   friendIcon: {
-    width: undefined,
-    height: undefined,
   },
   friendName: {
     marginLeft: 10,
     fontSize: 16,
   },
   addButtonIcon: {
-    height: undefined,
-    width: undefined,
   },
 });
