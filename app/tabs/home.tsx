@@ -7,12 +7,12 @@ export default function HomeScreen() {
     <ThemedView style={styles.overallContainer}>
       <ThemedView style={styles.profileSection}>
         <Image
-          source={{ uri: 'https://via.placeholder.com/150' }}
+          source={require('../../assets/images/FACE LX.png')}
           style={styles.profileImage}
         />
         <ThemedView style={styles.profileNameSection}>
-          <ThemedText style={styles.profileNameText}>User Name Here</ThemedText>
-          <ThemedText style={styles.profileDateText}>Today's Date</ThemedText>
+          <ThemedText style={styles.profileNameText}>Lin Bae Xin</ThemedText>
+          <ThemedText style={styles.profileDateText}>01/02/1999</ThemedText>
         </ThemedView>
       </ThemedView>
 
@@ -69,8 +69,8 @@ export default function HomeScreen() {
             <ThemedView style={{flexDirection: 'row', backgroundColor: 'rgba(0, 0, 0, 0)', paddingTop: 20}}>
               <ThemedView style={styles.cardVerticalLump}>
                 <ThemedText style={{fontSize: 18, color: '#5f5f5f', paddingTop: 15}}>Challenges Cleared</ThemedText>
-                <ThemedText style={{fontSize: 32, color: '#000000', paddingTop: 10}}>0123</ThemedText>
-                <ThemedText style={{fontSize: 18, color: '#5f5f5f', paddingTop: 20}}>Points Earned</ThemedText>
+                <ThemedText style={{fontSize: 32, color: '#000000', paddingTop: 15}}>0123</ThemedText>
+                <ThemedText style={{fontSize: 18, color: '#5f5f5f', paddingTop: 15}}>Points Earned</ThemedText>
               </ThemedView>
               <ThemedView style={styles.cardVerticalLump}>
                 <Image
@@ -99,16 +99,16 @@ const styles = StyleSheet.create({
   profileSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    paddingLeft: 30,
+    paddingTop: 30,
+    paddingHorizontal: 30,
+    paddingBottom: 10,
     backgroundColor: 'rgba(0, 0, 0, 0)',
   },
   profileNameSection: {
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'center',
-    marginLeft: 10,
-    marginRight: 30,
+    marginHorizontal: 30,
     backgroundColor: 'rgba(0, 0, 0, 0)',
   },
   profileImage: {
