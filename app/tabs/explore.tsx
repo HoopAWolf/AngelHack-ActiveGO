@@ -1,41 +1,91 @@
-import { Image, StyleSheet } from 'react-native';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import React, { useState, useEffect } from 'react';
+import MapView, { Marker, Callout } from 'react-native-maps';
+import { StyleSheet, View, Text } from 'react-native';
+import * as Location from 'expo-location';
 
-export default function ExploreScreen() {
+export default function App() {
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [mapRef, setMapRef] = useState<MapView | null>(null);
+  const searching = true
+
+  const [markers, setMarkers] = useState([
+    { id: 1, title: 'BLK 64a Commonwealth', coordinate: { latitude: 1.2991835976134736, longitude: 103.79657305825769 },
+     count: 10, free: true, type: 0, name: 'BLK 64a Commonwealth' },
+    { id: 2, title: 'BLK 65 Commonwealth', coordinate: { latitude: 1.2996205624351878, longitude: 103.79687908989848 },
+     count: 10, free: true, type: 0, name: 'BLK 65 Commonwealth' },
+    { id: 3, title: 'BLK 63 Commonwealth', coordinate: { latitude: 1.2988528664723906, longitude: 103.79713333649674 },
+     count: 10, free: true, type: 0, name: 'BLK 63 Commonwealth' },
+    { id: 4, title: 'Chess', coordinate: { latitude: 1.2985073314629263, longitude: 103.79710212352771 },
+     count: 10, free: false, type: 1, name: 'BLK 62 Commonwealth' }
+  ]);
+
+  const [types, setTypes] = useState([
+    { color: 'green'},
+    { color: 'blue'},
+    { color: 'orange'}
+  ])
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission denied');
+        return;
+      }
+
+      try {
+        let currentLocation = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+          timeInterval: 5000 // 5 seconds
+        });
+        setLocation(currentLocation);
+        if (mapRef) {
+          mapRef.setCamera({
+            center: {
+              latitude: currentLocation.coords.latitude,
+              longitude: currentLocation.coords.longitude
+            },
+            zoom: 16, // Specify the desired zoom level
+          });
+        }
+      } catch (error) {
+        console.error('Error getting current location:', error.message);
+      }
+    })();
+  }, [mapRef]); // Added mapRef as a dependency
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">HOME PAGE</ThemedText>
-      </ThemedView>
-
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      {location ? (
+        <MapView 
+          style={styles.map} 
+          showsUserLocation={true} 
+          ref={ref => setMapRef(ref)} // Set the mapRef when the MapView is rendered
+        >
+          {markers.map(marker => (
+            marker.free == searching && (
+            <Marker
+              key={marker.id}
+              coordinate={marker.coordinate}
+              title={marker.title}
+              description={"Capacity: " + marker.count }  
+              pinColor={types[marker.type].color}
+            />
+          )
+          ))} 
+        </MapView>
+      ) : (
+        <Text>Loading...</Text>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  map: {
+    flex: 1,
   },
 });
