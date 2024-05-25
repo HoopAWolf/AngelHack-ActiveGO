@@ -1,13 +1,10 @@
 import 'react-native-gesture-handler'; // MUST BE AT THE TOP OF INDEX!!!!!!!!!!!!!!!!!!!!!!!!!
-import * as React from 'react';
 import { StyleSheet, View, ImageBackground, Image } from 'react-native';
 import { Button, Icon, IconButton, Text } from 'react-native-paper';
 
-type LoginScreenProps = {
-  onLoginPressed: () => void;
-};
 
-const LoginScreen: React.FC<LoginScreenProps> = (props: LoginScreenProps) => {
+const LoginScreen = (props: any) => {
+  const { navigation } = props;
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -24,7 +21,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props: LoginScreenProps) => {
               source={require('../assets/images/singpass-logo.png')}
               size={128}
             /></View>}
-            mode='contained' style={styles.singPassButton} onPress={() => props.onLoginPressed()}>
+            mode='contained' style={styles.singPassButton} onPress={() => navigation.navigate('Singpass')}>
           </IconButton>
           <Text theme={{ colors: { onSurface: 'white' } }}>OR</Text>
           <Button mode='contained-tonal' style={styles.healthy365Button} onPress={() => { }}>
