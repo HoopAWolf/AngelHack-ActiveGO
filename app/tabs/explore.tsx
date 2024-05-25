@@ -6,7 +6,7 @@ import * as Location from 'expo-location';
 export default function App() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [mapRef, setMapRef] = useState<MapView | null>(null);
-  const searching = true
+  const searching = false
 
   const [markers, setMarkers] = useState([
     { id: 1, title: 'BLK 64a Commonwealth', coordinate: { latitude: 1.2991835976134736, longitude: 103.79657305825769 },
@@ -69,8 +69,13 @@ export default function App() {
               coordinate={marker.coordinate}
               title={marker.title}
               description={"Capacity: " + marker.count }  
-              pinColor={types[marker.type].color}
-            />
+              pinColor={types[marker.type].color}>
+            
+              <View style={styles.marker}>
+                <Text style={styles.markerText}>{marker.title}</Text>
+                <View style={[styles.pin, { backgroundColor: types[marker.type].color }]} />
+              </View>
+            </Marker>
           )
           ))} 
         </MapView>
@@ -87,5 +92,23 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+  },
+  marker: {
+    alignItems: 'center',
+  },
+  markerText: {
+    marginBottom: 5,
+    fontWeight: 'bold',
+    backgroundColor: 'white',
+    padding: 2,
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  pin: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'black',
   },
 });
