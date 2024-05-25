@@ -34,10 +34,10 @@ export default function SocialScreen() {
 
   // Sample friend data
   const friends = [
-    { name: 'Chee Mun', icon: require('../assets/images/social_icon.png') },
-    { name: 'Devin', icon: require('../assets/images/social_icon.png') },
-    { name: 'Hui Sheng', icon: require('../assets/images/social_icon.png') },
-    { name: 'Adrian', icon: require('../assets/images/social_icon.png') },
+    { name: 'Chee Mun', icon: require('../../assets/images/social_icon.png') },
+    { name: 'Devin', icon: require('../../assets/images/social_icon.png') },
+    { name: 'Hui Sheng', icon: require('../../assets/images/social_icon.png') },
+    { name: 'Adrian', icon: require('../../assets/images/social_icon.png') },
     // Add more friend data as needed
   ];
 
@@ -47,7 +47,7 @@ export default function SocialScreen() {
         <Animated.View style={[styles.modalView, { transform: [{ translateY: slideAnim }] }]}>
           <TouchableOpacity style={styles.button} activeOpacity={0.5} onPress={closeModal}>
             <Image
-              source={require('../assets/images/close_button.png')}
+              source={require('../../assets/images/close_button.png')}
               style={styles.backButton}
             />
           </TouchableOpacity>
@@ -70,7 +70,7 @@ export default function SocialScreen() {
           ))}
           <TouchableOpacity style={styles.addButton} activeOpacity={0.5}>
             <Image
-              source={require('../assets/images/invite_button.png')}
+              source={require('../../assets/images/invite_button.png')}
               style={styles.addButtonIcon}
             />
           </TouchableOpacity>
