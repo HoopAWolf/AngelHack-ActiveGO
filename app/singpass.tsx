@@ -1,7 +1,5 @@
-import 'react-native-gesture-handler'; // MUST BE AT THE TOP OF INDEX!!!!!!!!!!!!!!!!!!!!!!!!!
-import { StyleSheet, View, ImageBackground, Image, TouchableOpacity } from 'react-native';
-import { Button, Icon, IconButton, Text } from 'react-native-paper';
-import { opacity } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { Icon, Text } from 'react-native-paper';
 
 
 const SingpassScreen = (props: any) => {
