@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler'; // MUST BE AT THE TOP OF INDEX!!!!!!!!!!!!!!!!!!!!!!!!!
 import { StyleSheet, View, ImageBackground, Image } from 'react-native';
 import { Button, Icon, IconButton, Text } from 'react-native-paper';
 

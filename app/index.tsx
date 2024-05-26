@@ -1,4 +1,5 @@
 // App.tsx
+import 'react-native-gesture-handler'; // MUST BE AT THE TOP OF START FILE!!!!!!!!!!!!!!!!!!!!!!!!!
 import { BottomNavigation, MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
 import LoginScreen from './login';
 import HomeScreen from './tabs/home';
